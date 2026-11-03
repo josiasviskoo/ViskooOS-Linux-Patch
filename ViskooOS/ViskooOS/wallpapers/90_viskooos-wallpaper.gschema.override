@@ -1,0 +1,22 @@
+# Papel de parede padrão do Viskoo OS
+# Instalar em /usr/share/glib-2.0/schemas/ e rodar: sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
+
+[org.gnome.desktop.background]
+picture-uri = 'file:///usr/share/backgrounds/viskooos/motocicleta-custom-em-garagem-industrial.png'
+picture-uri-dark = 'file:///usr/share/backgrounds/viskooos/motocicleta-custom-em-garagem-industrial.png'
+picture-options = 'zoom'
+
+[org.gnome.desktop.background:ubuntu]
+picture-uri = 'file:///usr/share/backgrounds/viskooos/motocicleta-custom-em-garagem-industrial.png'
+picture-uri-dark = 'file:///usr/share/backgrounds/viskooos/motocicleta-custom-em-garagem-industrial.png'
+picture-options = 'zoom'
+
+[org.gnome.desktop.background:GNOME-Greeter]
+picture-uri = 'file:///usr/share/backgrounds/viskooos/motocicleta-custom-em-garagem-industrial.png'
+picture-uri-dark = 'file:///usr/share/backgrounds/viskooos/motocicleta-custom-em-garagem-industrial.png'
+
+[org.gnome.desktop.screensaver]
+picture-uri = 'file:///usr/share/backgrounds/viskooos/motocicleta-custom-em-garagem-industrial.png'
+
+[org.gnome.desktop.screensaver:ubuntu]
+picture-uri = 'file:///usr/share/backgrounds/viskooos/motocicleta-custom-em-garagem-industrial.png'

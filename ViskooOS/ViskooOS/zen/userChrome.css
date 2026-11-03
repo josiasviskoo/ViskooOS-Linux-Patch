@@ -1,0 +1,55 @@
+/* ViskooOS — Zen cinza chumbo (interface) */
+:root, #main-window, #zen-main-app-wrapper {
+  --zen-main-browser-background: #1c1c1e !important;
+  --zen-main-browser-background-toolbar: #1c1c1e !important;
+  --zen-themed-toolbar-bg: #1c1c1e !important;
+  --zen-themed-toolbar-bg-transparent: #1c1c1e !important;
+  --zen-colors-primary: #3a3a3c !important;
+  --zen-colors-secondary: #2c2c2e !important;
+  --zen-colors-tertiary: #1c1c1e !important;
+  --zen-colors-hover-bg: #3a3a3c !important;
+  --zen-colors-border: #3a3a3c !important;
+  --zen-colors-input-bg: #2c2c2e !important;
+  --zen-dialog-background: #252527 !important;
+  --zen-urlbar-background: #2c2c2e !important;
+  --toolbar-bg: #1c1c1e !important;
+  --toolbar-field-background-color: #2c2c2e !important;
+  --toolbar-field-focus-background-color: #343436 !important;
+  --toolbarbutton-hover-background: #3a3a3c !important;
+  --tab-selected-bgcolor: #3a3a3c !important;
+  --arrowpanel-background: #252527 !important;
+  --arrowpanel-border-color: #3a3a3c !important;
+  --sidebar-background-color: #1c1c1e !important;
+  --lwt-accent-color: #1c1c1e !important;
+  --lwt-text-color: #e6e6e6 !important;
+  --newtab-background-color: #1c1c1e !important;
+}
+#main-window, #navigator-toolbox, #nav-bar, #TabsToolbar, #titlebar,
+#zen-appcontent-navbar-container, #zen-sidebar-top-buttons, #zen-sidebar-bottom-buttons,
+#navigator-toolbox-background, #zen-main-app-wrapper, #browser, #tabbrowser-tabbox,
+#tabbrowser-tabpanels, .browserContainer, #sidebar-box, #sidebar-main {
+  background: #1c1c1e !important;
+  background-color: #1c1c1e !important;
+  background-image: none !important;
+}
+/* sem a grade/textura e o gradiente do espaço de trabalho */
+#zen-browser-grain, .zen-browser-generic-background, #zen-browser-background,
+.zen-browser-grain { display: none !important; opacity: 0 !important; }
+/* borda/sombra ao redor da página */
+#tabbrowser-tabpanels > hbox, .browserSidebarContainer {
+  box-shadow: none !important;
+  outline: 1px solid #343436 !important;
+}
+#urlbar-background { background: #2c2c2e !important; border-color: #3a3a3c !important; }
+#urlbar[focused] #urlbar-background, #urlbar[open] #urlbar-background { background: #343436 !important; }
+.tab-background[selected], .tab-background[multiselected] { background: #3a3a3c !important; box-shadow: none !important; }
+/* campo de endereço: cantos 100% arredondados (pílula) */
+#urlbar, #urlbar-background, #urlbar-input-container, #searchbar {
+  border-radius: 999px !important;
+}
+/* com as sugestões abertas vira um painel: cantos grandes, mas sem distorcer a lista */
+#urlbar[open] #urlbar-background, #urlbar[breakout-extend] #urlbar-background,
+#urlbar[open], #urlbar[breakout-extend] {
+  border-radius: 20px !important;
+}
+#urlbar[breakout-extend] #urlbar-input-container { border-radius: 999px !important; }

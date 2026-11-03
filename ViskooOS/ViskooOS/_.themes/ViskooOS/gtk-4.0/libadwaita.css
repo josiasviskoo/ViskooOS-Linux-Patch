@@ -1,0 +1,35 @@
+/* ViskooOS (libadwaita) — instalado pelo install.sh */
+:root {
+  --accent-bg-color: #ea7320;
+  --accent-color: #f59a52;
+  --accent-fg-color: #ffffff;
+  --window-bg-color: #1a1a1a;
+  --view-bg-color: #141414;
+  --headerbar-bg-color: #202020;
+  --headerbar-backdrop-color: #1a1a1a;
+  --sidebar-bg-color: #1e1e1e;
+  --sidebar-backdrop-color: #1a1a1a;
+  --secondary-sidebar-bg-color: #191919;
+  --card-bg-color: rgb(255 255 255 / 5%);
+  --dialog-bg-color: #222222;
+  --popover-bg-color: #262626;
+}
+@define-color accent_bg_color #ea7320;
+@define-color accent_color #f59a52;
+@define-color accent_fg_color #ffffff;
+
+/* ViskooOS: botões da janela com fundos nas cores do macOS */
+windowcontrols > button, windowcontrols > button:hover, windowcontrols > button:active, windowcontrols > button:backdrop { background: none; box-shadow: none; }
+windowcontrols > button.close > image { background-color: #ff5f57; background-image: none; color: rgba(0, 0, 0, 0.65); border-radius: 9999px; box-shadow: none; border: none; }
+windowcontrols > button.close:hover > image { background-color: shade(#ff5f57, 1.12); }
+windowcontrols > button.close:active > image { background-color: shade(#ff5f57, 0.85); }
+windowcontrols > button.close:backdrop > image { background-color: alpha(#ff5f57, 0.6); color: rgba(0, 0, 0, 0.5); }
+windowcontrols > button.minimize > image { background-color: #febc2e; background-image: none; color: rgba(0, 0, 0, 0.65); border-radius: 9999px; box-shadow: none; border: none; }
+windowcontrols > button.minimize:hover > image { background-color: shade(#febc2e, 1.12); }
+windowcontrols > button.minimize:active > image { background-color: shade(#febc2e, 0.85); }
+windowcontrols > button.minimize:backdrop > image { background-color: alpha(#febc2e, 0.6); color: rgba(0, 0, 0, 0.5); }
+windowcontrols > button.maximize > image { background-color: #28c840; background-image: none; color: rgba(0, 0, 0, 0.65); border-radius: 9999px; box-shadow: none; border: none; }
+windowcontrols > button.maximize:hover > image { background-color: shade(#28c840, 1.12); }
+windowcontrols > button.maximize:active > image { background-color: shade(#28c840, 0.85); }
+windowcontrols > button.maximize:backdrop > image { background-color: alpha(#28c840, 0.6); color: rgba(0, 0, 0, 0.5); }
+windowcontrols > button > image { padding: 3px; }

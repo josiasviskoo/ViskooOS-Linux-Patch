@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=ViskooOS
+Description=Boot minimalista estilo Apple: logo centralizado e barra de progresso fina
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/viskooos
+ScriptFile=/usr/share/plymouth/themes/viskooos/viskooos.script

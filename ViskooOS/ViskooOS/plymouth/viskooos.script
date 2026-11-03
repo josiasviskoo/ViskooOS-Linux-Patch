@@ -1,0 +1,163 @@
+// ViskooOS — tela de boot minimalista estilo Apple
+// Logo branco no centro exato da tela + barra de progresso fina e arredondada na parte de baixo, fundo preto.
+
+Window.SetBackgroundTopColor(0, 0, 0);
+Window.SetBackgroundBottomColor(0, 0, 0);
+
+// Escala para telas HiDPI (4K = 2x)
+fun calc_scale(h) {
+    sc = Math.Int(h / 1080);
+    if (sc < 1) sc = 1;
+    return sc;
+}
+scale = calc_scale(Window.GetHeight());
+
+// ---------- Sprites ----------
+logo.original = Image("logo.png");
+logo.sprite = Sprite();
+logo.sprite.SetOpacity(0);
+
+track.original = Image("progress-track.png");
+track.sprite = Sprite();
+
+fill.original = Image("progress-fill.png");
+fill.sprite = Sprite();
+
+screen_w = 0;
+screen_h = 0;
+screen_x = 0;
+screen_y = 0;
+logo_size = 0;
+bar_w = 0;
+bar_h = 0;
+bar.x = 0;
+bar.y = 0;
+shown_progress = 0;
+
+// Calcula as posições a partir do tamanho ATUAL da tela.
+// É chamado de novo sempre que a resolução muda durante o boot (o driver de vídeo
+// troca o framebuffer do firmware pela resolução nativa) — antes o logo ficava
+// preso nas coordenadas da primeira resolução e aparecia fora do centro.
+fun layout() {
+    screen_w = Window.GetWidth();
+    screen_h = Window.GetHeight();
+    screen_x = Window.GetX();
+    screen_y = Window.GetY();
+    scale = calc_scale(screen_h);
+
+    // Logo: centro exato da tela (horizontal e vertical)
+    logo_size = 96 * scale;
+    logo.sprite.SetImage(logo.original.Scale(logo_size, logo_size));
+    logo.sprite.SetPosition(screen_x + Math.Int((screen_w - logo_size) / 2),
+                            screen_y + Math.Int((screen_h - logo_size) / 2), 10);
+
+    // Loading: barra fina na parte de baixo da tela
+    bar_w = 180 * scale;
+    bar_h = 4 * scale;
+    bar.x = screen_x + Math.Int((screen_w - bar_w) / 2);
+    bar.y = screen_y + screen_h - 140 * scale;
+    track.sprite.SetImage(track.original.Scale(bar_w, bar_h));
+    track.sprite.SetPosition(bar.x, bar.y, 10);
+    fill.sprite.SetPosition(bar.x, bar.y, 11);
+    if (shown_progress > 0) set_fill(shown_progress);
+}
+
+target_progress = 0;
+fade = 0;
+
+// Barra só aparece no boot (no desligar/reiniciar fica só o logo, como no Mac)
+show_bar = 1;
+mode = Plymouth.GetMode();
+if (mode == "shutdown" || mode == "reboot") show_bar = 0;
+if (show_bar == 0) {
+    track.sprite.SetOpacity(0);
+}
+
+fun set_fill(p) {
+    w = Math.Int(bar_w * p);
+    if (w < bar_h) w = bar_h;
+    fill.sprite.SetImage(fill.original.Scale(w, bar_h));
+}
+
+layout();
+
+fun refresh_cb() {
+    // resolução mudou (troca de driver de vídeo no boot)? recentraliza tudo
+    if (Window.GetWidth() != screen_w || Window.GetHeight() != screen_h ||
+        Window.GetX() != screen_x || Window.GetY() != screen_y) layout();
+    // fade-in suave do logo
+    if (fade < 1) {
+        fade = fade + 0.04;
+        if (fade > 1) fade = 1;
+        logo.sprite.SetOpacity(fade);
+        if (show_bar) track.sprite.SetOpacity(fade);
+    }
+    // a barra persegue o progresso real devagar (sem saltos)
+    if (show_bar && shown_progress < target_progress) {
+        shown_progress = shown_progress + (target_progress - shown_progress) * 0.06 + 0.0005;
+        if (shown_progress > target_progress) shown_progress = target_progress;
+        set_fill(shown_progress);
+        fill.sprite.SetOpacity(fade);
+    }
+}
+Plymouth.SetRefreshFunction(refresh_cb);
+
+fun progress_cb(duration, progress) {
+    if (progress > target_progress) target_progress = progress;
+}
+Plymouth.SetBootProgressFunction(progress_cb);
+
+// ---------- Senha (disco criptografado) ----------
+prompt.sprite = Sprite();
+bullets.sprite = Sprite();
+
+fun hide_dialog() {
+    prompt.sprite.SetOpacity(0);
+    bullets.sprite.SetOpacity(0);
+    if (show_bar) {
+        track.sprite.SetOpacity(1);
+        fill.sprite.SetOpacity(1);
+    }
+}
+
+fun show_entry(text, n) {
+    track.sprite.SetOpacity(0);
+    fill.sprite.SetOpacity(0);
+    if (text == "") text = "Senha";
+    prompt.image = Image.Text(text, 0.85, 0.85, 0.85);
+    prompt.sprite.SetImage(prompt.image);
+    prompt.sprite.SetPosition(screen_x + screen_w / 2 - prompt.image.GetWidth() / 2, bar.y - 10 * scale, 20);
+    prompt.sprite.SetOpacity(1);
+    dots = "";
+    i = 0;
+    while (i < n) {
+        dots = dots + "•";
+        i = i + 1;
+    }
+    if (dots == "") dots = " ";
+    bullets.image = Image.Text(dots, 1, 1, 1);
+    bullets.sprite.SetImage(bullets.image);
+    bullets.sprite.SetPosition(screen_x + screen_w / 2 - bullets.image.GetWidth() / 2, bar.y + 20 * scale, 20);
+    bullets.sprite.SetOpacity(1);
+}
+
+fun password_cb(text, n) { show_entry(text, n); }
+fun question_cb(text, entry) { show_entry(text, 0); }
+
+Plymouth.SetDisplayPasswordFunction(password_cb);
+Plymouth.SetDisplayQuestionFunction(question_cb);
+Plymouth.SetDisplayNormalFunction(hide_dialog);
+
+// ---------- Mensagens (ex.: verificação de disco) ----------
+message.sprite = Sprite();
+fun message_cb(text) {
+    message.image = Image.Text(text, 0.6, 0.6, 0.6);
+    message.sprite.SetImage(message.image);
+    message.sprite.SetPosition(screen_x + screen_w / 2 - message.image.GetWidth() / 2, screen_y + screen_h - 60 * scale, 20);
+}
+Plymouth.SetMessageFunction(message_cb);
+
+fun quit_cb() {
+    if (show_bar) set_fill(1);
+}
+Plymouth.SetQuitFunction(quit_cb);

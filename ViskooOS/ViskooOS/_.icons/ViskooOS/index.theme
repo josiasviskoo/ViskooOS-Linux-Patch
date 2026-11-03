@@ -1,0 +1,34 @@
+[Icon Theme]
+Name=ViskooOS
+Comment=ViskooOS — ícones Adwaita com pastas laranja e cursor DMZ preto/laranja
+Inherits=Adwaita,hicolor
+Example=folder
+Directories=scalable/places,scalable/mimetypes,scalable/apps,symbolic/actions
+
+[scalable/places]
+Context=Places
+Size=128
+MinSize=8
+MaxSize=512
+Type=Scalable
+
+[scalable/mimetypes]
+Context=MimeTypes
+Size=128
+MinSize=8
+MaxSize=512
+Type=Scalable
+
+[scalable/apps]
+Context=Applications
+Size=64
+MinSize=8
+MaxSize=512
+Type=Scalable
+
+[symbolic/actions]
+Context=Actions
+Size=16
+MinSize=8
+MaxSize=512
+Type=Scalable
