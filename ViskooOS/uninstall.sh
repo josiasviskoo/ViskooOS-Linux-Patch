@@ -51,6 +51,16 @@ else
   gsettings set org.gnome.shell enabled-extensions "$new"
 fi
 
+# 1b. Fontes do sistema (DM Sans / DM Mono)
+if [ -s "$STATE/fonts.backup" ]; then
+  while IFS='|' read -r schema key value; do
+    [ -n "$schema" ] && gsettings set "$schema" "$key" "$value" || true
+  done < "$STATE/fonts.backup"
+else
+  for k in font-name document-font-name monospace-font-name; do gsettings reset org.gnome.desktop.interface "$k"; done
+  gsettings reset org.gnome.desktop.wm.preferences titlebar-font
+fi
+
 # 2. Arquivos copiados pelo instalador (só os que ele criou)
 if [ -s "$MANIFEST" ]; then
   log "Removendo arquivos instalados"
@@ -58,7 +68,7 @@ if [ -s "$MANIFEST" ]; then
   sort -r "$MANIFEST" | while IFS= read -r p; do
     case "$p" in "$HOME"/?*) ;; *) echo "  ignorado (fora do HOME): $p"; continue ;; esac
     [ -e "$p" ] || continue
-    if [ -d "$p" ] && [[ "$p" =~ /(\.themes|\.icons|Kvantum|plank|themes|backgrounds|gnome-background-properties)$ ]]; then
+    if [ -d "$p" ] && [[ "$p" =~ /(\.themes|\.icons|Kvantum|plank|themes|backgrounds|gnome-background-properties|fonts)$ ]]; then
       rmdir "$p" 2>/dev/null && echo "  pasta vazia removida: $p" || echo "  mantida (tem outros arquivos): $p"
     else
       rm -rf -- "$p" && echo "  removido: $p"
@@ -88,6 +98,14 @@ if [ -d "$PLY_DIR" ]; then
     sudo update-alternatives --auto default.plymouth
   fi
   sudo rm -rf -- "$PLY_DIR"
+  # arranjo de monitores copiado para a tela de login (GDM)
+  if [ -s "$STATE/gdm-monitors.list" ]; then
+    while IFS= read -r f; do
+      case "$f" in */monitors.xml) ;; *) continue ;; esac
+      if [ -e "$f.viskooos-orig" ]; then sudo mv -f "$f.viskooos-orig" "$f"; else sudo rm -f -- "$f"; fi
+    done < "$STATE/gdm-monitors.list"
+    rm -f "$STATE/gdm-monitors.list"
+  fi
   log "Recriando initramfs (pode demorar ~1 min)"
   sudo update-initramfs -u
 fi

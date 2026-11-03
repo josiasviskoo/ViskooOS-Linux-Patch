@@ -2,6 +2,16 @@
 
 ## 2026-11-03
 
+- **Boot → login sem "pulo" para a direita (2 monitores).** O GDM não conhecia o arranjo das telas
+  (ultrawide à esquerda + notebook à direita) e reorganizava os monitores ao assumir a tela, deslocando o
+  último quadro do boot. O `install.sh` (passo 9b) agora copia o `~/.config/monitors.xml` para a tela de login;
+  o `uninstall.sh` desfaz.
+- **Sombra das janelas estilo macOS:** mais intensa, mais difusa e um pouco mais afastada (deslocada para baixo);
+  mais suave nas janelas em segundo plano. Vale para apps GTK3, GTK4 e libadwaita.
+- **Fontes do sistema = fontes do site viskoo.com.br:** **DM Sans** (interface, documentos, títulos) e
+  **DM Mono** (terminal/código), com todas as variações (Thin a Black, itálicos). Ficam em
+  `ViskooOS/fonts/` (licença OFL) e são aplicadas pelo passo 7b2 do `install.sh`; o `uninstall.sh` volta as originais.
+
 - **ViskooOS Apps: instalador reescrito (mais robusto e com progresso real).**
   - **Compiz não instalava:** o download das extensões usava o `curl`, que não estava instalado
     (`curl: comando não encontrado`). Agora o download é feito pelo Python (sem depender do curl) e o

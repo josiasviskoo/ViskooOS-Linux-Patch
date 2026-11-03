@@ -187,6 +187,24 @@ fi
 track "$ADW_CSS"
 cp "$SRC/_.themes/ViskooOS/gtk-4.0/libadwaita.css" "$ADW_CSS"
 
+# 7b2. Fontes do sistema: DM Sans (interface/títulos) + DM Mono (terminal/código), as mesmas de viskoo.com.br
+log "Instalando fontes DM Sans e DM Mono"
+FONT_DIR="$HOME/.local/share/fonts/ViskooOS"
+track "$HOME/.local/share/fonts"; track "$FONT_DIR"; mkdir -p "$FONT_DIR"
+cp "$SRC/fonts/"*.ttf "$SRC/fonts/OFL-DMSans-DMMono.txt" "$FONT_DIR/"
+fc-cache -f "$FONT_DIR" >/dev/null 2>&1 || true
+FONT_BACKUP="$STATE/fonts.backup"   # salvo à parte: instalações antigas não guardavam as fontes
+if [ ! -s "$FONT_BACKUP" ]; then
+  for k in font-name document-font-name monospace-font-name; do
+    echo "org.gnome.desktop.interface|$k|$(gsettings get org.gnome.desktop.interface $k)"
+  done > "$FONT_BACKUP"
+  echo "org.gnome.desktop.wm.preferences|titlebar-font|$(gsettings get org.gnome.desktop.wm.preferences titlebar-font)" >> "$FONT_BACKUP"
+fi
+gsettings set org.gnome.desktop.interface font-name 'DM Sans 11'
+gsettings set org.gnome.desktop.interface document-font-name 'DM Sans 11'
+gsettings set org.gnome.desktop.interface monospace-font-name 'DM Mono 11'
+gsettings set org.gnome.desktop.wm.preferences titlebar-font 'DM Sans Bold 11'
+
 # 7c. Dock
 log "Configurando o dock"
 for k in "${!DOCK[@]}"; do
@@ -244,6 +262,21 @@ if [ "${SKIP_BOOT:-0}" != "1" ]; then
   sudo update-alternatives --set default.plymouth "$PLY_FILE"
   log "Recriando initramfs (pode demorar ~1 min)"
   sudo update-initramfs -u
+
+  # 9b. Tela de login (GDM) com o mesmo arranjo de monitores do usuário.
+  #     Sem isso, com 2 telas o GDM reorganiza os monitores do jeito padrão dele ao assumir
+  #     a tela e o último quadro do boot "pula" para a direita segundos antes do login.
+  if [ -s "$HOME/.config/monitors.xml" ]; then
+    log "Copiando o arranjo de monitores para a tela de login (GDM)"
+    for d in /etc/xdg /var/lib/gdm3/seat0/config /var/lib/gdm3/.config; do
+      case "$d" in /var/lib/gdm3*) [ -d /var/lib/gdm3 ] || continue ;; esac
+      [ -e "$d/monitors.xml" ] && [ ! -e "$d/monitors.xml.viskooos-orig" ] && sudo cp -a "$d/monitors.xml" "$d/monitors.xml.viskooos-orig"
+      sudo install -D -m 644 "$HOME/.config/monitors.xml" "$d/monitors.xml"
+      echo "$d/monitors.xml" >> "$STATE/gdm-monitors.list"
+    done
+    [ -d /var/lib/gdm3/.config ] && sudo chown -R gdm:gdm /var/lib/gdm3/.config 2>/dev/null || true
+    sort -u -o "$STATE/gdm-monitors.list" "$STATE/gdm-monitors.list"
+  fi
 fi
 
 sort -u -o "$MANIFEST" "$MANIFEST"
