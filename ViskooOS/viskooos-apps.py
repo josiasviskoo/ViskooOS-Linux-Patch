@@ -29,6 +29,10 @@ SYSTEM_CAT = "Sistema"
 HERE = os.path.dirname(os.path.abspath(__file__))
 LOGO = os.path.join(HERE, "ViskooOS", "plymouth", "logo.png")
 LOG = os.path.expanduser("~/.local/share/viskooos/install-apps.log")
+# depois do DesViskar-OS.sh: sem o nome e o logo ViskooOS
+if os.path.exists(os.path.expanduser("~/.local/share/viskooos/sem-marca")):
+    TITLE = "Instalar Apps"
+    LOGO = ""
 
 CAT_ICONS = {
     "Sistema": "emblem-system-symbolic",

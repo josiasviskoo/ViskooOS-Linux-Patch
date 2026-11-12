@@ -111,7 +111,8 @@ if [ -d "$PLY_DIR" ]; then
 fi
 
 # 3b. Logos do Ubuntu: remove os arquivos ViskooOS e devolve os originais (dpkg-divert)
-divs="$(dpkg-divert --list 2>/dev/null | awk '/by viskooos$/{print $3}')"
+# LC_ALL=C: em português a saída é "desvio de ... por viskooos"
+divs="$(LC_ALL=C dpkg-divert --list 2>/dev/null | awk '$NF == "viskooos" {print $3}')"
 if [ -n "$divs" ]; then
   log "Devolvendo os logos originais do Ubuntu"
   for dst in $divs; do

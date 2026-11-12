@@ -23,6 +23,8 @@ set -uo pipefail
 SELF="$(readlink -f "${BASH_SOURCE[0]}")"
 ROOT="$(dirname "$SELF")"
 TITLE="ViskooOS Apps"
+# depois do DesViskar-OS.sh: sem o nome e o logo ViskooOS
+[ -f "$HOME/.local/share/viskooos/sem-marca" ] && TITLE="Instalar Apps"
 
 # ──────────────────────────────── CATÁLOGO ────────────────────────────────
 # id | marcado por padrão (1/0) | categoria | nome | descrição | fontes
@@ -550,11 +552,12 @@ OUT=/dev/null; [ -t 1 ] && OUT=/dev/tty
 # Atalho no menu de aplicativos (ViskooOS Apps)
 DESK="$HOME/.local/share/applications/viskooos-apps.desktop"
 ICON="$ROOT/ViskooOS/plymouth/logo.png"; [ -f "$ICON" ] || ICON=system-software-install
+[ -f "$STATE/sem-marca" ] && ICON=system-software-install
 mkdir -p "$(dirname "$DESK")"
 cat > "$DESK" <<EOF
 [Desktop Entry]
 Type=Application
-Name=ViskooOS Apps
+Name=$TITLE
 Comment=Escolha e instale aplicativos
 Exec=bash "$SELF"
 Icon=$ICON
